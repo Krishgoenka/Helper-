@@ -2,20 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suspicious Solana Tokens</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
-        button { padding: 10px 20px; font-size: 18px; }
-        table { margin-top: 20px; width: 100%; border-collapse: collapse; }
+        button { padding: 10px 20px; font-size: 18px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        table { margin-top: 20px; width: 100%; border-collapse: collapse; display: none; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
         th { background-color: #f2f2f2; }
+        .loading { font-size: 20px; color: #007bff; }
     </style>
 </head>
 <body>
     <h1>Suspicious Solana Tokens Detector 🚨</h1>
     <button onclick="loadTokens()">Load Suspicious Tokens</button>
+    <p id="loadingMessage" class="loading" style="display: none;">Loading...</p>
 
-    <table id="tokensTable" style="display: none;">
+    <table id="tokensTable">
         <thead>
             <tr>
                 <th>Token Name</th>
@@ -30,31 +34,45 @@
 
     <script>
         async function loadTokens() {
-            const response = await fetch('http://localhost:8000/suspicious-tokens');
-            const data = await response.json();
+            // Show loading message
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('tokensTable').style.display = 'none';
 
-            const table = document.getElementById('tokensTable');
-            const tbody = document.getElementById('tokensBody');
+            try {
+                // Fetch data from the backend API
+                const response = await fetch('http://127.0.0.1:8000/suspicious-tokens');
+                const data = await response.json();
 
-            tbody.innerHTML = '';
+                // Check if we have suspicious tokens
+                if (data.suspicious_tokens.length > 0) {
+                    const table = document.getElementById('tokensTable');
+                    const tbody = document.getElementById('tokensBody');
+                    tbody.innerHTML = ''; // Clear previous data
 
-            if (data.suspicious_tokens.length > 0) {
-                table.style.display = 'table';
-                data.suspicious_tokens.forEach(token => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${token.name}</td>
-                        <td>${token.symbol}</td>
-                        <td>$${token.price_usd.toFixed(4)}</td>
-                        <td style="color: ${token.price_change_24h > 0 ? 'green' : 'red'}">
-                            ${token.price_change_24h.toFixed(2)}%
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } else {
-                table.style.display = 'none';
-                alert("No suspicious tokens found! 🎉");
+                    // Show the table and populate it with token data
+                    data.suspicious_tokens.forEach(token => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${token.name}</td>
+                            <td>${token.symbol}</td>
+                            <td>$${token.price_usd.toFixed(4)}</td>
+                            <td style="color: ${token.price_change_24h > 0 ? 'green' : 'red'}">
+                                ${token.price_change_24h.toFixed(2)}%
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    table.style.display = 'table'; // Show the table
+                } else {
+                    alert("No suspicious tokens found! 🎉");
+                }
+            } catch (error) {
+                console.error("Error loading tokens:", error);
+                alert("Failed to load data. Please try again.");
+            } finally {
+                // Hide loading message
+                document.getElementById('loadingMessage').style.display = 'none';
             }
         }
     </script>
