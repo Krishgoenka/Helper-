@@ -39,18 +39,18 @@
             document.getElementById('tokensTable').style.display = 'none';
 
             try {
-                // Fetch data from the backend API
+                // Fetch data from the backend API (FastAPI)
                 const response = await fetch('http://127.0.0.1:8000/suspicious-tokens');
                 const data = await response.json();
 
                 // Check if we have suspicious tokens
-                if (data.suspicious_tokens.length > 0) {
+                if (data.length > 0) {
                     const table = document.getElementById('tokensTable');
                     const tbody = document.getElementById('tokensBody');
                     tbody.innerHTML = ''; // Clear previous data
 
                     // Show the table and populate it with token data
-                    data.suspicious_tokens.forEach(token => {
+                    data.forEach(token => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${token.name}</td>
