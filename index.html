@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Solana Suspicious Tokens - Fraud Detector</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white">
+
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">🔍 Solana Suspicious Tokens Detector</h1>
+
+    <div class="text-center mb-4">
+      <button id="loadBtn" class="btn btn-primary">Load Suspicious Tokens</button>
+    </div>
+
+    <table class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Price Change (24h %)</th>
+          <th>Social Spike</th>
+        </tr>
+      </thead>
+      <tbody id="tokensTable">
+      </tbody>
+    </table>
+
+    <canvas id="activityChart" height="100"></canvas>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
